@@ -1,0 +1,21 @@
+<SETTINGS>
+	<DEBUG>7</DEBUG>
+	<!--0:OF_LOG_VERBOSE
+		1:OF_LOG_NOTICE
+		2:OF_LOG_WARNING
+		3:OF_LOG_ERROR
+		4:OF_LOG_ERROR
+		5:OF_LOG_SILENT-->
+	<FULLSCREEN>1</FULLSCREEN>
+	<CANVAS width="768"	height="580" x="80" y="80"/>
+	<CCANVAS width="768"	height="580" x="80" y="80"/>
+	<CAMERA width="800"	height="600" x="0" y="0" capture_path="captures/" starttime="100"/>
+	<SCREENSAVER timeout="1" file="movies/instruction.mov"/>
+	<AR>0</AR>
+	<FBOSAVER width="768"	height="580" x="0" y="0"/>
+	<PREVIEW x="2048" y="0" w="1" h="1"/>
+	<PHOTOSAVER width="768"	height="580" output_path="output/"/>
+	<SERIAL comport="COM3" baud="19200"></SERIAL>
+	<IDEL>240</IDEL>
+	<COUNTER>1</COUNTER>
+</SETTINGS>
