@@ -162,6 +162,7 @@ void testApp::networkMessage(OSCEventArgs &e)
             {
                 network.sendMessage("barcode",lastCaptureFile);
                 if(target_photo_path!="")network.sendMessage("image_path",ofToDataPath(target_photo_path,bFullPath).c_str());
+                ofBeginCustomFullscreen(0, ofGetScreenHeight(), cWidth, cHeight);
             }
             else if (address=="file" && numTag==1)
             {

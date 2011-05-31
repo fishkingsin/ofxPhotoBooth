@@ -349,7 +349,11 @@ void testApp::update()
      }*/
     if (bLogTime)ofLog(OF_LOG_VERBOSE,"log time %s\n",logtime.LogTime());
 
-    if (ofGetFrameNum()==10)
+    if (ofGetFrameNum()==300)
+    {
+        ofBeginCustomFullscreen(x, ofGetScreenHeight(), cWidth, cHeight);
+    }
+    if (ofGetFrameNum()==100)
     {
 
         if (xml.getValue("SETTINGS:FULLSCREEN",false))
@@ -383,7 +387,7 @@ void testApp::update()
     }
     if (bChangeBG)
     {
-
+        ofBeginCustomFullscreen(x, y, cWidth, cHeight);
         if (bg_fn!="")
             camera.chageBackground("images/background/"+bg_fn);
 
@@ -994,7 +998,7 @@ void testApp::keyPressed(int key)
         case OF_KEY_F2:
 
             //ofEndCustomFullscreen();
-            ofBeginCustomFullscreen(0, 1024, cWidth, cHeight);
+            ofBeginCustomFullscreen(0, ofGetHeight(), cWidth, cHeight);
             break;
         case OF_KEY_F3:
             //ofEndCustomFullscreen();
