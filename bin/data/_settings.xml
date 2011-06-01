@@ -17,7 +17,7 @@
     </SliderFloat_LiveViewScale>
     <SliderFloat_offsetX>
         <name>offsetX</name>
-        <value>-512.000000</value>
+        <value>-384.000000</value>
     </SliderFloat_offsetX>
     <SliderFloat_offsetY>
         <name>offsetY</name>
