@@ -46,7 +46,8 @@ static void ofBeginCustomFullscreen(int x, int y, int width, int height){
 
 	   	SetWindowLong(vWnd, GWL_STYLE, windowStyle);
 
-		SetWindowPos(vWnd, HWND_TOP, x, y, width, height, SWP_FRAMECHANGED);
+		SetWindowPos(vWnd, HWND_TOPMOST, x, y, width, height, SWP_FRAMECHANGED);
+		//SetWindowPos( vWnd, HWND_TOPMOST, x, y, width, height, SWP_NOREPOSITION | SWP_NOSIZE );
 		bCustomFullscreen = true;
 
 	#endif
@@ -75,6 +76,23 @@ static void  ofEndCustomFullscreen(){
 	#endif
 }
 
+static void ofSetWindowAlwaysOnTop() {
+#ifdef TARGET_WIN32
+
+    //get its handle "GLUT" = class name "ogl" = window
+    HWND hwnd = FindWindow( NULL, "PhotoBooth" );
+
+    SetWindowPos( hwnd, HWND_TOPMOST, NULL, NULL, NULL, NULL, SWP_NOREPOSITION | SWP_NOSIZE );
+#endif
+
+#ifdef TARGET_OSX
+    // What goes here??
+#endif
+
+#ifdef TARGET_LINUX
+    // What goes here?
+#endif
+}
 
 
 #endif

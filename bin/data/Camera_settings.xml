@@ -35,6 +35,22 @@
         <name>disconnectIntv</name>
         <value>14.750000</value>
     </SliderFloat_disconnectIntv>
+    <Toggle_bScaleImage>
+        <name>bScaleImage</name>
+        <value>0</value>
+    </Toggle_bScaleImage>
+    <SliderFloat_camera_scale>
+        <name>camera_scale</name>
+        <value>0.650001</value>
+    </SliderFloat_camera_scale>
+    <SliderFloat_camera_x>
+        <name>camera_x</name>
+        <value>24.000000</value>
+    </SliderFloat_camera_x>
+    <SliderFloat_camera_y>
+        <name>camera_y</name>
+        <value>35.500000</value>
+    </SliderFloat_camera_y>
     <SliderFloat_PX0>
         <name>PX0</name>
         <value>505.600006</value>

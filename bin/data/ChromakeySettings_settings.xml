@@ -1,7 +1,7 @@
 <controls>
     <SliderFloat_green_shader_tol>
         <name>green_shader_tol</name>
-        <value>0.085000</value>
+        <value>0.125000</value>
     </SliderFloat_green_shader_tol>
     <SliderFloat_green_brightness>
         <name>green_brightness</name>
@@ -33,9 +33,9 @@
     </SliderInt_green_step>
     <ColorPicker_green_KeyColorPicker>
         <name>green_KeyColorPicker</name>
-        <values_0>0.115000</values_0>
-        <values_1>0.080000</values_1>
-        <values_2>0.100000</values_2>
+        <values_0>1.000000</values_0>
+        <values_1>1.000000</values_1>
+        <values_2>1.000000</values_2>
         <values_3>1.000000</values_3>
     </ColorPicker_green_KeyColorPicker>
     <SliderFloat_blue_shader_tol>

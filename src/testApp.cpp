@@ -8,6 +8,7 @@
 #include <mach-o/dyld.h>
 #include <libgen.h>
 #endif
+static bool bDebug;
 static void copyImage(const char *_src, const char *_des)
 {
 #ifdef TARGET_WIN32
@@ -79,6 +80,8 @@ void testApp::setup()
     cWidth = xml.getAttribute("SETTINGS:CCANVAS","width",1280);
     cHeight = xml.getAttribute("SETTINGS:CCANVAS","height",720);
 
+    bDebug = false;
+
     currentLogLevel = selectLogLevel = xml.getValue("SETTINGS:DEBUG",0);
     LogName[0] = "OF_LOG_VERBOSE";
     LogName[1] = "OF_LOG_NOTICE";
@@ -90,6 +93,7 @@ void testApp::setup()
     {
         case 0:
             ofSetLogLevel(OF_LOG_VERBOSE);
+            bDebug = true;
             break;
         case 1:
             ofSetLogLevel(OF_LOG_NOTICE);
@@ -117,6 +121,7 @@ void testApp::setup()
 
     //=======================
     clearLog();
+    if(xml.getValue("SETTINGS:ALWAYSONTOP",false))ofSetWindowAlwaysOnTop();
     int width = xml.getAttribute("SETTINGS:CANVAS","width",1920);
     int height = xml.getAttribute("SETTINGS:CANVAS","height",1080);
     int camW = xml.getAttribute("SETTINGS:CAMERA","width",640);
@@ -238,10 +243,15 @@ void testApp::setup()
     serial.setup(//com.c_str(), baud
                  xml.getAttribute("SETTINGS:SERIAL","comport","COM3"),
                  xml.getAttribute("SETTINGS:SERIAL","baud",19200));
-    //idel timer
-    idel.setup(xml.getValue("SETTINGS:IDEL",60),false);
-    idel.startTimer();
-    ofAddListener(idel.TIMER_REACHED,this,&testApp::onTimesUp);
+    //idel timer------------------------
+    int idelTime = xml.getValue("SETTINGS:IDEL",-1);
+    if(idelTime>0)
+    {
+        idel.setup(idelTime,false);
+        idel.startTimer();
+        ofAddListener(idel.TIMER_REACHED,this,&testApp::onTimesUp);
+    }
+    //idel timer------------------------end
     //Network------------------------
     //NETWORK SETTINGS
 
@@ -278,6 +288,7 @@ void testApp::setup()
     startThread(true,false);
     keyPressed('0');
     camera.chageBackground("images/background/bg_number1.jpg");
+    bgImg.loadImage("images/background/bg_number1.jpg");
     //keyPressed('5');
     tempCap.allocate(cWidth,cHeight,OF_IMAGE_COLOR_ALPHA);
     bLoadImport = false;
@@ -389,7 +400,10 @@ void testApp::update()
     {
         ofBeginCustomFullscreen(x, y, cWidth, cHeight);
         if (bg_fn!="")
+        {
             camera.chageBackground("images/background/"+bg_fn);
+            bgImg.loadImage("images/background/"+bg_fn);
+        }
 
         resetIdel();
         setPause(false);
@@ -555,6 +569,7 @@ void testApp::update()
         }
     }
     countDown.rect.updateFade();
+    //ofSetWindowAlwaysOnTop();
 
 }
 
@@ -871,7 +886,8 @@ void testApp::LiveView()
 void testApp::keyPressed(int key)
 {
 
-
+if(bDebug)
+{
     switch (key)
     {
         case OF_KEY_RETURN:
@@ -981,6 +997,7 @@ void testApp::keyPressed(int key)
         case'8':
         case'9':
             camera.chageBackground("images/background/bg_number"+ofToString(key-'0')+".jpg");
+            bgImg.loadImage("images/background/bg_number"+ofToString(key-'0')+".jpg");
             break;
         case OF_KEY_BACKSPACE:
             bShow = false;
@@ -1012,6 +1029,7 @@ void testApp::keyPressed(int key)
 
             break;
     }
+}
 }
 
 //--------------------------------------------------------------

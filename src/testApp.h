@@ -160,7 +160,7 @@ public:
     bool                bNETWORKMode;
     bool bChangeBG,bChangeFG;
     bool fgLoaded;
-    ofImage fgImg;
+    ofImage fgImg,bgImg;
 
     //indicator
     bool bShow4R;

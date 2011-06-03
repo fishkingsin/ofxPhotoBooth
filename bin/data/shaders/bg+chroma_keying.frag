@@ -392,7 +392,8 @@ void main( void )
 				minValue);
 	//vec4 result = mix(b,a,dot(minValue,(1./(numAlpha))));
 	//vec4 result = mix(b,a,smoothstep(maxValue ,minValue, 1.-nValue[5]));
-	gl_FragColor = result;
+	//gl_FragColor = result;
+	gl_FragColor = vec4(a.rgb,minValue);
 
 	
 	
