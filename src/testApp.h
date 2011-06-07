@@ -1,7 +1,7 @@
 #ifndef _TEST_APP
 #define _TEST_APP
 
-#define USE_OFXFENSTER
+//#define USE_OFXFENSTER
 
 #ifdef USE_OFXFENSTER
 #include "ofxFenster.h"
@@ -55,9 +55,9 @@
 #include "ofxExif.h"
 
 
-class testApp : public ofBaseApp , public ofxThread,
+class testApp : public ofBaseApp , public ofxThread
 #ifdef USE_OFXFENSTER
-            public ofxFensterListener
+            ,public ofxFensterListener
 #endif
 {
 public:

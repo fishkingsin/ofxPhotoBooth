@@ -108,6 +108,7 @@
 			<Add directory="..\..\..\addons\ofxLogTime\src" />
 			<Add directory="..\..\..\addons\ofxAutoShutdown\src" />
 			<Add directory="..\..\..\addons\ofxExif" />
+			<Add directory="..\..\..\addons\ofxFenster" />
 		</Compiler>
 		<Linker>
 			<Add option="../../../libs/FreeImage/lib/win_cb/FreeImage.lib" />
@@ -266,6 +267,8 @@
 		<Unit filename="..\..\..\addons\ofxFadable\src\ofxFadableVideo.h">
 			<Option virtualFolder="addons\ofxFadable\src\" />
 		</Unit>
+		<Unit filename="..\..\..\addons\ofxFenster\ofxFenster.cpp" />
+		<Unit filename="..\..\..\addons\ofxFenster\ofxFenster.h" />
 		<Unit filename="..\..\..\addons\ofxImage\src\ofxImage.cpp">
 			<Option virtualFolder="addons\ofxImage\" />
 		</Unit>
