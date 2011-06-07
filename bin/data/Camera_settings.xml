@@ -37,7 +37,7 @@
     </SliderFloat_disconnectIntv>
     <Toggle_bScaleImage>
         <name>bScaleImage</name>
-        <value>0</value>
+        <value>1</value>
     </Toggle_bScaleImage>
     <SliderFloat_camera_scale>
         <name>camera_scale</name>
