@@ -168,7 +168,10 @@ void testApp::networkMessage(OSCEventArgs &e)
                 network.sendMessage("barcode",lastCaptureFile);
                 if(target_photo_path!="")
                 {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3ba42f90b40ae02d88a37ab1034773fd7fc25a97
                     network.sendMessage("image_path",ofToDataPath(target_photo_path,bFullPath).c_str());
                     network.sendMessage("title",bg_fn);
                 }

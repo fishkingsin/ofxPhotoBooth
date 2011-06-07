@@ -17,7 +17,7 @@ static void ofBeginCustomFullscreen(int x, int y, int width, int height){
 
 	#ifdef TARGET_WIN32
 
-	    HWND vWnd  = FindWindow(NULL,  "PhotoBooth");
+	    HWND vWnd  = FindWindow(NULL,  "ofxPhotoBooth");
 
 		if(!bCustomFullscreen){
 
@@ -61,7 +61,7 @@ static void  ofEndCustomFullscreen(){
 	#ifdef TARGET_WIN32
 
 		if(bCustomFullscreen){
-			HWND vWnd  = FindWindow(NULL, "PhotoBooth");
+			HWND vWnd  = FindWindow(NULL, "ofxPhotoBooth");
 
 		    long windowStyle = GetWindowLong(vWnd, GWL_STYLE);
 			windowStyle  |= WS_OVERLAPPEDWINDOW;

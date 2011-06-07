@@ -1,6 +1,12 @@
 #ifndef _TEST_APP
 #define _TEST_APP
 
+#define USE_OFXFENSTER
+
+#ifdef USE_OFXFENSTER
+#include "ofxFenster.h"
+#endif
+
 //note 20101007
 //add svaeJPG in ofxImage
 //ofxFOBTextureSaver changed save jpg / png opertation
@@ -46,9 +52,14 @@
 #define COPY_TEST
 
 #include "winUtils.h"
-class testApp : public ofBaseApp , public ofxThread
-{
+#include "ofxExif.h"
 
+
+class testApp : public ofBaseApp , public ofxThread,
+#ifdef USE_OFXFENSTER
+            public ofxFensterListener
+#endif
+{
 public:
     ~testApp();
     void setup();
@@ -217,6 +228,14 @@ public:
     //HeartBeatThread
     HeartBeatThread heartbeat;
 
+
+    ofxExif exif;
+#ifdef USE_OFXFENSTER
+
+
+    void fensterDraw();
+    void fensterUpdate();
+#endif
 };
 
 #endif

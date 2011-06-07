@@ -9,6 +9,7 @@
 #include <libgen.h>
 #endif
 static bool bDebug;
+static bool bFlipFinal;
 static void copyImage(const char *_src, const char *_des)
 {
 #ifdef TARGET_WIN32
@@ -25,7 +26,8 @@ static void copyImage(const char *_src, const char *_des)
     uint32_t bufsize = 4096;
     char exepath[4096];
     int result = _NSGetExecutablePath(exepath, &bufsize);
-    if (result == 0) { // _NSGetExecutablePath() worked
+    if (result == 0)   // _NSGetExecutablePath() worked
+    {
         char command[4096];
         sprintf(command, "/bin/cp %s %s", _src,_des);
         result = system(command);
@@ -37,6 +39,7 @@ static void copyImage(const char *_src, const char *_des)
     }
 #endif
 }
+
 static string today_str;
 static string target_photo_path;
 //--------------------------------------------------------------
@@ -48,6 +51,7 @@ testApp::~testApp()
 //--------------------------------------------------------------
 void testApp::setup()
 {
+
 
     if ( xml.loadFile("config.xml"))
     {
@@ -91,25 +95,25 @@ void testApp::setup()
     LogName[5] = "OF_LOG_SILENT";
     switch (currentLogLevel)
     {
-        case 0:
-            ofSetLogLevel(OF_LOG_VERBOSE);
-            bDebug = true;
-            break;
-        case 1:
-            ofSetLogLevel(OF_LOG_NOTICE);
-            break;
-        case 2:
-            ofSetLogLevel(OF_LOG_WARNING);
-            break;
-        case 3:
-            ofSetLogLevel(OF_LOG_ERROR);
-            break;
-        case 4:
-            ofSetLogLevel(OF_LOG_ERROR);
-            break;
-        case 5:
-            ofSetLogLevel(OF_LOG_SILENT);
-            break;
+    case 0:
+        ofSetLogLevel(OF_LOG_VERBOSE);
+        bDebug = true;
+        break;
+    case 1:
+        ofSetLogLevel(OF_LOG_NOTICE);
+        break;
+    case 2:
+        ofSetLogLevel(OF_LOG_WARNING);
+        break;
+    case 3:
+        ofSetLogLevel(OF_LOG_ERROR);
+        break;
+    case 4:
+        ofSetLogLevel(OF_LOG_ERROR);
+        break;
+    case 5:
+        ofSetLogLevel(OF_LOG_SILENT);
+        break;
 
     }
 
@@ -121,7 +125,7 @@ void testApp::setup()
 
     //=======================
     clearLog();
-    if(xml.getValue("SETTINGS:ALWAYSONTOP",false))ofSetWindowAlwaysOnTop();
+    if (xml.getValue("SETTINGS:ALWAYSONTOP",false))ofSetWindowAlwaysOnTop();
     int width = xml.getAttribute("SETTINGS:CANVAS","width",1920);
     int height = xml.getAttribute("SETTINGS:CANVAS","height",1080);
     int camW = xml.getAttribute("SETTINGS:CAMERA","width",640);
@@ -162,7 +166,7 @@ void testApp::setup()
     ofSetVerticalSync(true);
     ofEnableSmoothing();
     ofEnableAlphaBlending();
-    ofSetWindowTitle("PhotoBooth");
+    ofSetWindowTitle("ofxPhotoBooth");
 
     //SET WINDOWS borderless
 
@@ -192,6 +196,8 @@ void testApp::setup()
     gui.addToggle("Show4RIndicator",bShow4R).setNewColumn(true);
     gui.addToggle("Show6RIndicator",bShow6R);
     gui.addToggle("bFullPath",bFullPath);
+
+    gui.addToggle("bFlipFinal",bFlipFinal);
 
     setUpInstructionVideo();
 
@@ -241,11 +247,11 @@ void testApp::setup()
 
     //serial
     serial.setup(//com.c_str(), baud
-                 xml.getAttribute("SETTINGS:SERIAL","comport","COM3"),
-                 xml.getAttribute("SETTINGS:SERIAL","baud",19200));
+        xml.getAttribute("SETTINGS:SERIAL","comport","COM3"),
+        xml.getAttribute("SETTINGS:SERIAL","baud",19200));
     //idel timer------------------------
     int idelTime = xml.getValue("SETTINGS:IDEL",-1);
-    if(idelTime>0)
+    if (idelTime>0)
     {
         idel.setup(idelTime,false);
         idel.startTimer();
@@ -293,7 +299,12 @@ void testApp::setup()
     tempCap.allocate(cWidth,cHeight,OF_IMAGE_COLOR_ALPHA);
     bLoadImport = false;
 
+#ifdef USE_OFXFENSTER
+    fenster->setFPS(70);
+	fenster->setBounds(1280, 0, fboWidth, fboHeight);
 
+
+#endif
 }
 void testApp::threadedFunction()
 {
@@ -316,24 +327,24 @@ void testApp::update()
         currentLogLevel=selectLogLevel;
         switch (currentLogLevel)
         {
-            case 0:
-                ofSetLogLevel(OF_LOG_VERBOSE);
-                break;
-            case 1:
-                ofSetLogLevel(OF_LOG_NOTICE);
-                break;
-            case 2:
-                ofSetLogLevel(OF_LOG_WARNING);
-                break;
-            case 3:
-                ofSetLogLevel(OF_LOG_ERROR);
-                break;
-            case 4:
-                ofSetLogLevel(OF_LOG_ERROR);
-                break;
-            case 5:
-                ofSetLogLevel(OF_LOG_SILENT);
-                break;
+        case 0:
+            ofSetLogLevel(OF_LOG_VERBOSE);
+            break;
+        case 1:
+            ofSetLogLevel(OF_LOG_NOTICE);
+            break;
+        case 2:
+            ofSetLogLevel(OF_LOG_WARNING);
+            break;
+        case 3:
+            ofSetLogLevel(OF_LOG_ERROR);
+            break;
+        case 4:
+            ofSetLogLevel(OF_LOG_ERROR);
+            break;
+        case 5:
+            ofSetLogLevel(OF_LOG_SILENT);
+            break;
 
         }
     }
@@ -673,7 +684,14 @@ void testApp::LiveView()
     fboSaver.begin();
     ofBackground(0,0,0);
     glPushMatrix();
+    if (bFlipFinal && bCapture)
+    {
 
+
+        glTranslatef(fboWidth/2.0f,fboHeight/2.0f,0);
+        glRotatef(180,0,1,0);
+        glTranslatef(-fboWidth/2.0f,-fboHeight/2.0f,0);
+    }
     {
         ofPushStyle();
         ofSetColor(50,50,50);
@@ -681,7 +699,11 @@ void testApp::LiveView()
         ofPopStyle();
         glPushMatrix();
         //        glTranslatef(50,0,0);
+
+        bgImg.draw(0,0,fboWidth,fboHeight);
+        ofEnableAlphaBlending();
         camera.draw(0,0,fboWidth,fboHeight);
+        ofDisableAlphaBlending();
         glPopMatrix();
         ofPushStyle();
         ofEnableAlphaBlending();
@@ -803,7 +825,26 @@ void testApp::LiveView()
                 ofLog(OF_LOG_VERBOSE,"%s Capture small image ",logtime.LogTime());
                 string saveName = cap_path+lastCaptureFile+".jpg";
                 string sendFileName = cap_path+sendImagesFile;
+
+                /*if(bFlipFinal)
+                {
+                    ofxFBOTextureSaver tempFBO;
+                    tempFBO.allocate(fboWidth,fboHeight,true);
+                    tempFBO.begin();
+                        glPushMatrix();
+                        glTranslatef(fboWidth/2.0f,fboHeight/2.0f,0);
+                        glRotatef(180,0,1,0);
+                            glTranslatef(-fboWidth/2.0f,-fboHeight/2.0f,0);
+                            fboSaver.draw(0,0,fboWidth,fboHeight);
+                        glPopMatrix();
+                    tempFBO.end();
+                    tempFBO.saveImage(saveName,fboWidth,fboHeight);
+                }
+                else
+                {*/
                 fboSaver.saveImage(saveName,fboWidth,fboHeight);//need to get fbo pixel in GL_RGB and order RGBPixel
+                exif.readExif(saveName);
+                //}
                 float lastTime = ofGetElapsedTimef();
                 ofLog(OF_LOG_VERBOSE,"Before Save time: %f",lastTime);
 #ifdef COPY_TEST
@@ -886,10 +927,10 @@ void testApp::LiveView()
 void testApp::keyPressed(int key)
 {
 
-if(bDebug)
-{
-    switch (key)
+    if (bDebug)
     {
+        switch (key)
+        {
         case OF_KEY_RETURN:
 
             if (bNETWORKMode)
@@ -1028,8 +1069,8 @@ if(bDebug)
             ofLog(OF_LOG_VERBOSE,"keyPress ESC");
 
             break;
+        }
     }
-}
 }
 
 //--------------------------------------------------------------
@@ -1103,3 +1144,34 @@ void testApp::drawTwoImage(ofBaseDraws *baseDraw)
     baseDraw->draw(previewX,previewY,previewW,previewH);
 
 }
+#ifdef USE_OFXFENSTER
+
+void testApp::fensterDraw()
+{
+    fboSaver.draw(0,0);
+}
+void testApp::fensterUpdate()
+{
+    if(ofGetFrameNum()==300)
+    {
+        #ifdef TARGET_WIN32
+
+	    HWND vWnd  = FindWindow(NULL,  "PhotoBooth Fenster");
+
+
+	    long windowStyle = GetWindowLong(vWnd, GWL_STYLE);
+
+	    windowStyle &= ~WS_OVERLAPPEDWINDOW;
+	    windowStyle |= WS_POPUP;
+
+	   	SetWindowLong(vWnd, GWL_STYLE, windowStyle);
+
+		SetWindowPos(vWnd, HWND_TOP, 1280, 0, fboWidth, fboHeight, SWP_FRAMECHANGED);
+
+
+	#endif
+    }
+}
+#else
+
+#endif
