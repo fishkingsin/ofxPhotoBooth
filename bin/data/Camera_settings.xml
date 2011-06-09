@@ -41,15 +41,15 @@
     </Toggle_bScaleImage>
     <SliderFloat_camera_scale>
         <name>camera_scale</name>
-        <value>0.650001</value>
+        <value>1.000001</value>
     </SliderFloat_camera_scale>
     <SliderFloat_camera_x>
         <name>camera_x</name>
-        <value>24.000000</value>
+        <value>0.000000</value>
     </SliderFloat_camera_x>
     <SliderFloat_camera_y>
         <name>camera_y</name>
-        <value>35.500000</value>
+        <value>0.000000</value>
     </SliderFloat_camera_y>
     <SliderFloat_PX0>
         <name>PX0</name>

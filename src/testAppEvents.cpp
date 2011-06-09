@@ -107,6 +107,26 @@ void testApp::networkMessage(OSCEventArgs &e)
 
                 bg_fn = oscXML.getAttribute("ARGUMENT","VALUE","",0);
                 bChangeBG = true;
+                size_t p = bg_fn.find(".jpg");
+                string temp = bg_fn.substr(0,p);
+                selectedFrame = combox->getIndexForTitle(temp);
+                /*if(bg_fn=="bg_number1.jpg")
+                {
+                    selectedFrame = 0;
+                }
+                else if(bg_fn=="bg_number2.jpg")
+                {
+                    selectedFrame = 1;
+                }else if(bg_fn=="bg_number3.jpg")
+                {
+                    selectedFrame = 2;
+                }else if(bg_fn=="bg_number4.jpg")
+                {
+                    selectedFrame = 3;
+                }else if(bg_fn=="bg_number5.jpg")
+                {
+                    selectedFrame = 4;
+                }*/
 
             }
             else if (address=="foreground" && numTag==1)
@@ -129,11 +149,11 @@ void testApp::networkMessage(OSCEventArgs &e)
             else if (address=="restart")
             {
                 keyPressed(OF_KEY_BACKSPACE);
-                //ofBeginCustomFullscreen(0, ofGetScreenHeight(), cWidth, cHeight);
+                //if(bHidden)ofBeginCustomFullscreen(0, ofGetScreenHeight(), cWidth, cHeight);
             }
             else if (address=="restart_bg")
             {
-                ofBeginCustomFullscreen(0, ofGetScreenHeight(), cWidth, cHeight);
+                if(bHidden)ofBeginCustomFullscreen(0, ofGetScreenHeight(), cWidth, cHeight);
             }
             else if (address=="reset_live_view")
             {
@@ -171,7 +191,7 @@ void testApp::networkMessage(OSCEventArgs &e)
 					network.sendMessage("image_path",ofToDataPath(target_photo_path,bFullPath).c_str());
                     network.sendMessage("title",bg_fn);
                 }
-                ofBeginCustomFullscreen(0, ofGetScreenHeight(), cWidth, cHeight);
+                if(bHidden)ofBeginCustomFullscreen(0, ofGetScreenHeight(), cWidth, cHeight);
             }
             else if (address=="file" && numTag==1)
             {

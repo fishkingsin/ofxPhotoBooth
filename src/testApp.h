@@ -54,6 +54,32 @@
 #include "winUtils.h"
 #include "ofxExif.h"
 
+class MFrame
+{
+public:
+    ofImage _frame;
+    int x,y;
+    int v_x,v_y;
+    float scale;
+    void draw(float _x, float _y , float _w, float _h)
+    {
+        ofEnableAlphaBlending();
+        glPushMatrix();
+        //glScalef(scale, scale, 1);
+        glTranslatef(x+_x,y+_y,0);
+        _frame.draw(0,0);
+        glPopMatrix();
+        ofDisableAlphaBlending();
+
+    }
+    void applyTranform()
+    {
+
+        glTranslatef(v_x,v_y,0);
+        glScalef(scale, scale, 1);
+    }
+};
+
 
 class testApp : public ofBaseApp , public ofxThread
 #ifdef USE_OFXFENSTER
@@ -236,6 +262,16 @@ public:
     void fensterDraw();
     void fensterUpdate();
 #endif
+
+	MFrame *mFrame;
+	int selectedFrame;
+
+	void kiilDependentApp();
+	string *appList;
+	int appCount;
+
+	bool bHidden;
+	ofxSimpleGuiComboBox *combox;
 };
 
 #endif

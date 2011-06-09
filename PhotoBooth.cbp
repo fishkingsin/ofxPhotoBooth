@@ -163,6 +163,7 @@
 			<Add after='xcopy /e /i /y &quot;$(PROJECT_DIR)..\..\ARPhotoBooth\ofxAppMonitor\bin\ofxAppMonitor.exe&quot; &quot;$(PROJECT_DIR)\bin&quot;' />
 			<Add after='xcopy /e /i /y &quot;$(PROJECT_DIR)..\..\ARPhotoBooth\ofxAppMonitor\bin\data\config.ini&quot; &quot;$(PROJECT_DIR)\bin\data&quot;' />
 			<Add after='cmd /c if not exist &quot;$(PROJECT_DIR)bin/data&quot; mkdir &quot;$(PROJECT_DIR)bin/data&quot;' />
+			<Add after='xcopy /e /i /y &quot;$(PROJECT_DIR)\bin\$(PROJECT_NAME).exe&quot; &quot;C:\YahooNewsPhootBooth\bin\&quot;' />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="..\..\..\addons\CanonCameraWrapper\CanonCameraWrapper.cpp">
@@ -564,6 +565,9 @@
 			<Option virtualFolder="src\" />
 		</Unit>
 		<Unit filename="src\global.h">
+			<Option virtualFolder="src\" />
+		</Unit>
+		<Unit filename="src\kiilDependentApp.h">
 			<Option virtualFolder="src\" />
 		</Unit>
 		<Unit filename="src\main.cpp">

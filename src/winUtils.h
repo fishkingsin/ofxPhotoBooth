@@ -11,7 +11,7 @@ static int		storedWindowH;
 static bool		bCustomFullscreen = false;
 
 //--------------------------------------
-static void ofBeginCustomFullscreen(int x, int y, int width, int height){
+static void ofBeginCustomFullscreen(int x, int y, int width, int height , bool alwayOnTop = true){
 
 	if (ofGetWindowMode() == OF_GAME_MODE) return;
 
@@ -46,7 +46,9 @@ static void ofBeginCustomFullscreen(int x, int y, int width, int height){
 
 	   	SetWindowLong(vWnd, GWL_STYLE, windowStyle);
 
-		SetWindowPos(vWnd, HWND_TOPMOST, x, y, width, height, SWP_FRAMECHANGED);
+		if(alwayOnTop)SetWindowPos(vWnd, HWND_TOPMOST, x, y, width, height, SWP_FRAMECHANGED);
+		else SetWindowPos(vWnd, HWND_NOTOPMOST, x, y, width, height, SWP_FRAMECHANGED);
+
 		//SetWindowPos( vWnd, HWND_TOPMOST, x, y, width, height, SWP_NOREPOSITION | SWP_NOSIZE );
 		bCustomFullscreen = true;
 

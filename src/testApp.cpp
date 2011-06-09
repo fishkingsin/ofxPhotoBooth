@@ -9,6 +9,7 @@
 #include <libgen.h>
 #endif
 static bool bDebug;
+
 static bool bFlipFinal;
 static void copyImage(const char *_src, const char *_des)
 {
@@ -47,12 +48,13 @@ testApp::~testApp()
 {
     heartbeat.stopThread();
     ofLog(OF_LOG_VERBOSE,"testApp::~testApp()");
+    kiilDependentApp();
 }
 //--------------------------------------------------------------
 void testApp::setup()
 {
 
-
+    appCount = 0;
     if ( xml.loadFile("config.xml"))
     {
         ofLog(OF_LOG_VERBOSE,"config.xml loaded");
@@ -116,8 +118,17 @@ void testApp::setup()
         break;
 
     }
+    if (xml.getValue("SETTINGS:CURSOR",true))
+    {
+        ofShowCursor();
+    }
+    else
+    {
+        ofHideCursor();
+    }
 
-    ofHideCursor();
+    bHidden = xml.getValue("SETTINGS:HIDDEN",false);
+
     //=======================
     //delete captures storage
     MAX_CAP_FILE = xml.getValue("SETTINGS:MAX_CAPTURES",200);
@@ -160,9 +171,27 @@ void testApp::setup()
     ofAddListener(countDown.COUNTER_COUNTING,this,&testApp::Counting);
     clearStorage();
     ofSetWindowShape(width,height);
+    if (xml.pushTag("SETTINGS"))
+    {
+        appCount = xml.getNumTags("DEPENDENT_APP");
+        appList = new string[appCount];
+        for (int i = 0 ; i < appCount ; i++)
+        {
+            appList[i] = xml.getValue("DEPENDENT_APP","",i);
+            ofLog(OF_LOG_VERBOSE,"Depenedent App : "+appList[i]);
+        }
+        xml.popTag();
+    }
     //ofSetFullscreen(xml.getValue("SETTINGS:FULLSCREEN",false));
 
-    ofSetWindowPosition(x,y);
+//    ofSetWindowPosition(x,y);
+
+    if (bHidden)ofSetWindowPosition(x,ofGetScreenHeight());
+    else
+    {
+        ofSetWindowPosition(x,y);
+        //ofBeginCustomFullscreen( x,  y,  cWidth, cHeight , false);
+    }
     ofSetVerticalSync(true);
     ofEnableSmoothing();
     ofEnableAlphaBlending();
@@ -301,10 +330,75 @@ void testApp::setup()
 
 #ifdef USE_OFXFENSTER
     fenster->setFPS(70);
-	fenster->setBounds(1280, 0, fboWidth, fboHeight);
+    fenster->setBounds(1280, 0, fboWidth, fboHeight);
 
 
 #endif
+    if (xml.pushTag("SETTINGS"))
+    {
+
+        int numTags = xml.getNumTags("FRAME");
+        if (numTags>0)
+        {
+
+            string FrameName[numTags];
+            mFrame = new MFrame[numTags];
+            for (int i = 0 ; i < numTags ; i++)
+            {
+                FrameName[i] = xml.getValue("FRAME",ofToString(i),i);
+            }
+            combox = &gui.addComboBox("FrameName", selectedFrame, 5, FrameName);
+            for (int i = 0; i < numTags;  i++)
+            {
+                gui.addPage("Frame"+ofToString(i));
+                gui.addSlider(FrameName[i]+"_x",mFrame[i].x,0,fboWidth);
+                gui.addSlider(FrameName[i]+"_y",mFrame[i].y,0,fboHeight);
+                gui.addSlider(FrameName[i]+"v_x",mFrame[i].v_x,0,fboWidth);
+                gui.addSlider(FrameName[i]+"v_y",mFrame[i].v_y,0,fboHeight);
+                gui.addSlider(FrameName[i]+"_scale",mFrame[i].scale,0.0f,2.0f);
+                string fn=("images/Frame/frame_0"+ofToString((i+1))+".png");
+                if (!mFrame[i]._frame.loadImage(fn))
+                {
+                    ofLog(OF_LOG_ERROR,"Load "+fn+" Failed");
+                }
+                else
+                {
+                    if (bDebug)gui.addContent(FrameName[i]+"png",mFrame[i]._frame);
+                }
+            }
+        }
+        else{
+            selectedFrame = -1;
+        }
+        xml.popTag();
+    }
+
+
+
+//    FrameName[0] = "bg_number1";
+//    FrameName[1] = "bg_number2";
+//    FrameName[2] = "bg_number3";
+//    FrameName[3] = "bg_number4";
+//    FrameName[4] = "bg_number5";
+//    gui.addComboBox("FrameName", selectedFrame, 5, FrameName);
+//    for (int i = 0; i < 5;  i++)
+//    {
+//        gui.addSlider(FrameName[i]+"_x",mFrame[i].x,0,fboWidth);
+//        gui.addSlider(FrameName[i]+"_y",mFrame[i].y,0,fboHeight);
+//        gui.addSlider(FrameName[i]+"_scale",mFrame[i].scale,0.0f,2.0f);
+//        string fn=("images/Frame/frame_0"+ofToString((i+1))+".png");
+//        if (!mFrame[i]._frame.loadImage(fn))
+//        {
+//            ofLog(OF_LOG_ERROR,"Load "+fn+" Failed");
+//        }
+//        else
+//        {
+//            if (bDebug)gui.addContent(FrameName[i]+"png",mFrame[i]._frame);
+//        }
+//    }
+
+    gui.loadFromXML();
+
 }
 void testApp::threadedFunction()
 {
@@ -373,14 +467,14 @@ void testApp::update()
 
     if (ofGetFrameNum()==300)
     {
-        ofBeginCustomFullscreen(x, ofGetScreenHeight(), cWidth, cHeight);
+        if (bHidden)ofBeginCustomFullscreen(x, ofGetScreenHeight(), cWidth, cHeight);
     }
     if (ofGetFrameNum()==100)
     {
 
         if (xml.getValue("SETTINGS:FULLSCREEN",false))
         {
-            keyPressed('f');
+            if (bHidden)keyPressed('f');
         }
 #ifdef USE_AR
         if (!bSetup && useAR)
@@ -409,7 +503,7 @@ void testApp::update()
     }
     if (bChangeBG)
     {
-        ofBeginCustomFullscreen(x, y, cWidth, cHeight);
+        if (bHidden)ofBeginCustomFullscreen(x, y, cWidth, cHeight);
         if (bg_fn!="")
         {
             camera.chageBackground("images/background/"+bg_fn);
@@ -671,6 +765,12 @@ void testApp::draw()
 
     }
     gui.draw();
+
+    if(selectedFrame>-1)
+    {
+        mFrame[selectedFrame].draw(fboX,fboY,cWidth,cHeight);
+        mFrame[selectedFrame].draw(previewX,previewY,previewW,previewH);
+    }
     countDown.draw(fboX,fboY,cWidth,cHeight);
     countDown.draw(previewX,previewY,previewW,previewH);
     //    drawTwoImage(&countDown);
@@ -702,7 +802,10 @@ void testApp::LiveView()
 
         bgImg.draw(0,0,fboWidth,fboHeight);
         ofEnableAlphaBlending();
+        glPushMatrix();
+        if(selectedFrame>-1)mFrame[selectedFrame].applyTranform();
         camera.draw(0,0,fboWidth,fboHeight);
+        glPopMatrix();
         ofDisableAlphaBlending();
         glPopMatrix();
         ofPushStyle();
@@ -927,7 +1030,7 @@ void testApp::LiveView()
 void testApp::keyPressed(int key)
 {
 
-    if (bDebug)
+
     {
         switch (key)
         {
@@ -950,24 +1053,27 @@ void testApp::keyPressed(int key)
             break;
         case 'f':
 
-            ofBeginCustomFullscreen(x, y, cWidth, cHeight);
+            if (bHidden)ofBeginCustomFullscreen(x, y, cWidth, cHeight);
             break;
         case 'F':
 
             ofEndCustomFullscreen();
             break;
         case ' ':
-            gui.toggleDraw();
-            if (gui.isOn())
+            if (bDebug)
             {
-                ofShowCursor();
-                //ofSetWindowPosition(0,0);
-                ofEndCustomFullscreen();
-            }
-            else
-            {
-                ofHideCursor();
-                ofBeginCustomFullscreen(x, y, cWidth, cHeight);
+                gui.toggleDraw();
+                if (gui.isOn())
+                {
+                    ofShowCursor();
+                    //ofSetWindowPosition(0,0);
+                    ofEndCustomFullscreen();
+                }
+                else
+                {
+                    ofHideCursor();
+                    if (bHidden)ofBeginCustomFullscreen(x, y+ofGetScreenHeight(), cWidth, cHeight);
+                }
             }
             break;
         case '[':
@@ -1152,26 +1258,36 @@ void testApp::fensterDraw()
 }
 void testApp::fensterUpdate()
 {
-    if(ofGetFrameNum()==300)
+    if (ofGetFrameNum()==300)
     {
-        #ifdef TARGET_WIN32
+#ifdef TARGET_WIN32
 
-	    HWND vWnd  = FindWindow(NULL,  "PhotoBooth Fenster");
-
-
-	    long windowStyle = GetWindowLong(vWnd, GWL_STYLE);
-
-	    windowStyle &= ~WS_OVERLAPPEDWINDOW;
-	    windowStyle |= WS_POPUP;
-
-	   	SetWindowLong(vWnd, GWL_STYLE, windowStyle);
-
-		SetWindowPos(vWnd, HWND_TOP, 1280, 0, fboWidth, fboHeight, SWP_FRAMECHANGED);
+        HWND vWnd  = FindWindow(NULL,  "PhotoBooth Fenster");
 
 
-	#endif
+        long windowStyle = GetWindowLong(vWnd, GWL_STYLE);
+
+        windowStyle &= ~WS_OVERLAPPEDWINDOW;
+        windowStyle |= WS_POPUP;
+
+        SetWindowLong(vWnd, GWL_STYLE, windowStyle);
+
+        SetWindowPos(vWnd, HWND_TOP, 1280, 0, fboWidth, fboHeight, SWP_FRAMECHANGED);
+
+
+#endif
     }
 }
 #else
 
 #endif
+void testApp::kiilDependentApp()
+{
+    for (int i = 0 ; i< appCount ; i++)
+    {
+        char cmd [MAXPATH];
+        sprintf(cmd,"taskkill /im %s",appList[i].c_str());
+        system(cmd);
+    }
+
+}

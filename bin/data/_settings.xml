@@ -71,4 +71,8 @@
         <name>bFlipFinal</name>
         <value>0</value>
     </Toggle_bFlipFinal>
+    <ComboBox_FrameName>
+        <name>FrameName</name>
+        <value>4</value>
+    </ComboBox_FrameName>
 </controls>
