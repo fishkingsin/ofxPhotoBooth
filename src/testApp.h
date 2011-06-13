@@ -58,6 +58,7 @@ class MFrame
 {
 public:
     ofImage _frame;
+    ofImage caption;
     int x,y;
     int v_x,v_y;
     float scale;

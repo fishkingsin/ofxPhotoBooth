@@ -365,9 +365,16 @@ void testApp::setup()
                 {
                     if (bDebug)gui.addContent(FrameName[i]+"png",mFrame[i]._frame);
                 }
+                fn=("images/Frame/cap_0"+ofToString((i+1))+".png");
+                if (!mFrame[i].caption.loadImage(fn))
+                {
+                    ofLog(OF_LOG_ERROR,"Load "+fn+" Failed");
+                }
+
             }
         }
-        else{
+        else
+        {
             selectedFrame = -1;
         }
         xml.popTag();
@@ -765,11 +772,13 @@ void testApp::draw()
 
     }
     gui.draw();
-
-    if(selectedFrame>-1)
+    if (!bShow)
     {
-        mFrame[selectedFrame].draw(fboX,fboY,cWidth,cHeight);
-        mFrame[selectedFrame].draw(previewX,previewY,previewW,previewH);
+        if (selectedFrame>-1)
+        {
+            mFrame[selectedFrame].draw(fboX,fboY,cWidth,cHeight);
+            mFrame[selectedFrame].draw(previewX,previewY,previewW,previewH);
+        }
     }
     countDown.draw(fboX,fboY,cWidth,cHeight);
     countDown.draw(previewX,previewY,previewW,previewH);
@@ -803,7 +812,7 @@ void testApp::LiveView()
         bgImg.draw(0,0,fboWidth,fboHeight);
         ofEnableAlphaBlending();
         glPushMatrix();
-        if(selectedFrame>-1)mFrame[selectedFrame].applyTranform();
+        if (selectedFrame>-1)mFrame[selectedFrame].applyTranform();
         camera.draw(0,0,fboWidth,fboHeight);
         glPopMatrix();
         ofDisableAlphaBlending();
@@ -912,7 +921,12 @@ void testApp::LiveView()
 
         if (bCapture)
         {
-
+            if (selectedFrame>-1)
+            {
+                ofEnableAlphaBlending();
+                mFrame[selectedFrame].caption.draw(0,0);
+                ofDisableAlphaBlending();
+            }
             //            char buf[256];
             //            sprintf(buf,"%i_%i_%i_%i_%i_%i.jpg",
             //                    ofGetYear(),
