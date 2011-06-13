@@ -188,3 +188,13 @@ void testApp::sendMail(string msg)
     ofLog(OF_LOG_VERBOSE,cmd);
     system(cmd);
 }
+void testApp::kiilDependentApp()
+{
+    for (int i = 0 ; i< appCount ; i++)
+    {
+        char cmd [MAXPATH];
+        sprintf(cmd,"taskkill /im %s",appList[i].c_str());
+        system(cmd);
+    }
+
+}

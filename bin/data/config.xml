@@ -21,6 +21,7 @@
 	<COUNTER>1</COUNTER>
 	<DEPENDENT_APP>CoreControllUI.exe</DEPENDENT_APP>
 	<DEPENDENT_APP>VideoWallGallery.exe</DEPENDENT_APP>
+	<DEPENDENT_APP>ApplicationMonitor.exe</DEPENDENT_APP>
 	<FRAME>bg_number1</FRAME>
 	<FRAME>bg_number2</FRAME>
 	<FRAME>bg_number3</FRAME>
