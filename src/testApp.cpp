@@ -48,7 +48,7 @@ testApp::~testApp()
 {
     heartbeat.stopThread();
     ofLog(OF_LOG_VERBOSE,"testApp::~testApp()");
-    kiilDependentApp();
+
 }
 //--------------------------------------------------------------
 void testApp::setup()
@@ -1173,6 +1173,7 @@ void testApp::keyPressed(int key)
         case 27:
             //if (useAR)modelHandler->removeModelCollection();
             ofLog(OF_LOG_VERBOSE,"keyPress ESC");
+            kiilDependentApp();
 
             break;
         }
