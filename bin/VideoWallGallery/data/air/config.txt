@@ -1,0 +1,1 @@
+debugMode=false&alwaysOnTop=false&startX=1280&startY=0&startW=1706&startH=960&hideMouse=true

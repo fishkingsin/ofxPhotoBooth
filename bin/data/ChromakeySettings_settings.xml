@@ -1,7 +1,7 @@
 <controls>
     <SliderFloat_green_shader_tol>
         <name>green_shader_tol</name>
-        <value>0.120000</value>
+        <value>0.335000</value>
     </SliderFloat_green_shader_tol>
     <SliderFloat_green_brightness>
         <name>green_brightness</name>

@@ -1,0 +1,23 @@
+<?xml version="1.0"?><XML>
+	<IP>127.0.0.1</IP>
+	<PORT>3000</PORT>
+    <ITEM>
+        <BG>bg_number1.jpg</BG>
+        <FG>fg_number1.png</FG>
+    </ITEM>
+    <ITEM>
+        <BG>bg_number2.jpg</BG>
+        <FG>fg_number2.png</FG>
+    </ITEM>
+    <ITEM>
+        <BG>bg_number3.jpg</BG>
+        <FG>fg_number3.png</FG>
+    </ITEM>
+    <ITEM>
+        <BG>bg_number4.jpg</BG>
+        <FG>fg_number4.png</FG>
+    </ITEM>
+    <ITEM>
+        <BG>bg_number5.jpg</BG>
+        <FG>fg_number5.png</FG>
+    </ITEM></XML>
